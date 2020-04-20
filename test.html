@@ -1,0 +1,202 @@
+<html>
+  <head>
+    <script type="text/javascript" src="stats.js"></script>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+
+
+
+  </head>
+
+  <body>
+  </body>
+<!-- Place your code in the script tag below. You can also use an external .js file -->
+<script>
+
+function createModel() {
+    // Create a sequential model
+    const model = tf.sequential(); 
+
+    // Add a single input layer
+    model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+
+    // Add an output layer
+    model.add(tf.layers.dense({units: 1, useBias: true}));
+
+    return model;
+}
+
+function convertToTensor(x_train, y_train) {
+    return tf.tidy(() => {
+        // Step 1. Shuffle the data    
+        // tf.util.shuffle(data);
+
+        // Step 2. Convert data to Tensor
+        // const inputs = data.map(d => d.horsepower)
+        // const labels = data.map(d => d.mpg);
+
+        const inputTensor = tf.tensor2d(x_train, [x_train.length, 1]);
+        const labelTensor = tf.tensor2d(y_train, [y_train.length, 1]);
+
+        //Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+        const inputMax = inputTensor.max();
+        const inputMin = inputTensor.min();  
+        const labelMax = labelTensor.max();
+        const labelMin = labelTensor.min();
+
+        const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+        const normalizedLabels = labelTensor.sub(labelMin).div(labelMax.sub(labelMin));
+
+        return {
+            inputs: normalizedInputs,
+            labels: normalizedLabels,
+            // Return the min/max bounds so we can use them later.
+            inputMax,
+            inputMin,
+            labelMax,
+            labelMin,
+        }
+    });  
+}
+
+// function trainModel(model, inputs, labels) {
+//     // Prepare the model for training.  
+//     model.compile({
+//         optimizer: tf.train.adam(),
+//         loss: tf.losses.meanSquaredError,
+//         metrics: ['mse'],
+//     });
+
+//     const batchSize = 32;
+//     const epochs = 50;
+
+//     return model.fit(inputs, labels, {
+//         batchSize,
+//         epochs,
+//         shuffle: false,
+//         callbacks: tfvis.show.fitCallbacks(
+//             { name: 'Training Performance' },
+//             ['loss', 'mse'], 
+//             { height: 200, callbacks: ['onEpochEnd']}
+//         )
+//     });
+// }
+
+const model = createModel();
+const tensorData = convertToTensor(STATS_DATA["Москва"]["healed"].slice(0, -1), STATS_DATA["Россия"]["healed"].slice(0, -1));
+const {inputs, labels} = tensorData;
+const {inputMax, inputMin, labelMin, labelMax} = tensorData;
+var y_test = [STATS_DATA["Москва"]["healed"][STATS_DATA["Москва"]["healed"].length-1]];
+
+// Prepare the model for training.  
+model.compile({
+    optimizer: tf.train.adam(),
+    loss: tf.losses.meanSquaredError,
+    metrics: ['mse'],
+});
+
+const batchSize = 32;
+const epochs = 50;
+
+// return model.fit(inputs, labels, {
+//     batchSize,
+//     epochs,
+//     shuffle: false,
+//     callbacks: tfvis.show.fitCallbacks(
+//         { name: 'Training Performance' },
+//         ['loss', 'mse'], 
+//         { height: 200, callbacks: ['onEpochEnd']}
+//     )
+// });
+
+
+model.fit(inputs, labels, {
+    batchSize,
+    epochs,
+    shuffle: false,
+    callbacks: tfvis.show.fitCallbacks(
+        { name: 'Training Performance' },
+        ['loss', 'mse'], 
+        { height: 200, callbacks: ['onEpochEnd']}
+    )
+}).then(() => {
+    const inputTestTensor = tf.tensor2d(y_test, [y_test.length, 1]);
+    // const normalizedTestInputs = inputTestTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    // model.predict(normalizedTestInputs).mul(labelMax.sub(labelMin)).add(labelMin).print();
+    model.predict(inputTestTensor).print();
+});
+
+
+// trainModel(model, inputs, labels);
+console.log('Done Training');
+
+
+// const {inputMax, inputMin, labelMin, labelMax} = tensorData;
+// const inputTestTensor = tf.tensor2d(y_test, [y_test.length, 1]);
+// const normalizedTestInputs = inputTestTensor.sub(inputMin).div(inputMax.sub(inputMin));
+
+// model.predict(normalizedTestInputs).print();
+
+
+// tfvis.show.modelSummary({name: 'Model Summary'}, model);
+
+
+// Notice there is no 'import' statement. 'tf' is available on the index-page
+// because of the script tag above.
+
+
+
+// let x_train = STATS_DATA["Москва"]["healed"].slice(0, -1);
+// var y_train = STATS_DATA["Россия"]["healed"].slice(0, -1);
+// //   for (let i = 0; i < STATS_DATA["Москва"]["dates"].length-1; i++) {
+// //   x_train.push(STATS_DATA["Москва"]["dates"][i]);
+// //   y_train.push(STATS_DATA["Москва"]["healed"][i]);
+// //   }
+// // Generate some synthetic data for training.
+// const xs = tf.tensor2d(x_train, [x_train.length, 1]);
+// const ys = tf.tensor2d(y_train, [y_train.length, 1]);
+// console.log(y_train);
+// console.log(STATS_DATA["Россия"]["healed"][STATS_DATA["Россия"]["healed"].length-1]);
+
+// function createModel() {
+//   // Create a sequential model
+//   const model = tf.sequential(); 
+    
+//   // Add a single input layer
+//   model.add(tf.layers.dense({inputShape: [1], units: 1, useBias: true}));
+    
+//   // Add an output layer
+//   model.add(tf.layers.dense({units: 1, useBias: true}));
+
+//   return model;
+// }
+
+// // Define a model for linear regression.
+// const model = createModel();
+// //   model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+// model.add(
+//     tf.layers.dense({
+//         inputShape: [x_train.shape[1]],
+//         units: x_train.shape[1]
+//     })
+// );
+
+// model.add(tf.layers.dense({ units: 1 }));
+
+// // Prepare the model for training: Specify the loss and the optimizer.
+// model.compile({
+//     loss: 'meanSquaredError',
+//     optimizer: 'sgd',
+//     metrics: [tf.metrics.meanAbsoluteError]
+// });
+
+
+// // Train the model using the data.
+// model.fit(xs, ys).then(() => {
+// // Use the model to do inference on a data point the model hasn't seen before:
+// // Open the browser devtools to see the output
+//     model.predict(tf.tensor2d([STATS_DATA["Москва"]["healed"][STATS_DATA["Москва"]["healed"].length-1]], [1, 1])).print();
+// });
+</script>
+</html>

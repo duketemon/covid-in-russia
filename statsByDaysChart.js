@@ -2,11 +2,17 @@ var statsByDaysChartOptions = {
     title: 'Статистика по дням',
     curveType: 'function',
     legend: { position: 'bottom' },
-    pointSize: 10,
+    pointSize: 8,
+    vAxis: {
+        viewWindowMode:'explicit',
+        viewWindow: {
+            min:0
+        }
+    },
     series: {
-        0: { color: '#d50000', lineWidth: 6 },
-        1: { color: '#ffd600', lineWidth: 6 },
-        2: { color: '#212121', lineWidth: 6 },
+        0: { color: '#d50000', lineWidth: 5 },
+        1: { color: '#ffd600', lineWidth: 5 },
+        2: { color: '#212121', lineWidth: 5 },
     }
 };
 

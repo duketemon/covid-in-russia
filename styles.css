@@ -31,7 +31,7 @@ h1, h3, h5 {
     text-align: center;
 }
 
-h4 {
+.numbers-label {
     font-size: 2em;
     font-weight: bold;
 }
@@ -45,4 +45,15 @@ h4 {
     margin-left: 11px;
     width: 300px;
     height: 35px
+}
+
+
+/* Stats by days  */
+#stats-by-days-title, #stats-by-regions-title {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+#stats-by-day-buttons-block {
+    margin-top: 5px;
 }

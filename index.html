@@ -22,7 +22,7 @@
             <td class="content-space"></td>
             <td class="content-cell">
                 <div class="alert alert-danger content-cell-block" role="alert">
-                    <h4 id="infected-number" class="alert-heading">0</h4>
+                    <h4 id="infected-number" class="alert-heading numbers-label">0</h4>
                     <p>Инфицированных</p>
                     <hr>
                     <p class="mb-0"><span id="new-infected-cases">+0</span> за сутки</p>
@@ -30,7 +30,7 @@
             </td>
             <td class="content-cell">
                 <div class="alert alert-success content-cell-block" role="alert">
-                    <h4 id="healed-number" class="alert-heading">0</h4>
+                    <h4 id="healed-number" class="alert-heading numbers-label">0</h4>
                     <p>Выздоровивших</p>
                     <hr>
                     <p class="mb-0"><span id="new-healed-cases">+0</span> за сутки</p>
@@ -38,7 +38,7 @@
             </td>
             <td class="content-cell">
                 <div class="alert alert-dark content-cell-block" role="alert">
-                    <h4 id="died-number" class="alert-heading">0</h4>
+                    <h4 id="died-number" class="alert-heading numbers-label">0</h4>
                     <p>Умерших</p>
                     <hr>
                     <p class="mb-0"><span id="new-died-cases">+0</span> за сутки</p>
@@ -47,21 +47,38 @@
             <td class="content-space"></td>
         </tr>
         <tr>
+            <td colspan="5">
+                <h3 id="stats-by-days-title"><b>Количество заражённых, выздоровивших и умерших по субъектам России</b></h3>
+            </td>
+        </tr>
+        <tr id="stats-by-day-buttons-block">
             <td class="content-space"></td>
             <td colspan="3">
                 <button id="russia-btn" type="button" class="btn btn-primary" style="width: 100px;" onclick="updateStatsDataHandler(this)">Россия</button>
                 <button type="button" class="btn btn-primary" style="width: 100px;" onclick="updateStatsDataHandler(this)">Москва</button>
                 <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Московская Область</button>
                 <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Санкт-Петербург</button>
-                <input id="subjects-list" class="ui-autocomplete-input" autocomplete="off">
+                <input id="subjects-list" class="ui-autocomplete-input" autocomplete="off" style="margin: 0 auto;">
                 <button type="button" class="btn btn-outline-primary"  onclick="buildStatsChartHandler()">Показать</button>
             </td>
             <td class="content-space"></td>
         </tr>
+        <tr>
+            <td colspan="5">
+                <div id="stats-chart"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <h3 id="stats-by-regions-title"><b>Количество заражённых по федеральным округам и субъектам России</b></h3>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/2145462" data-url="https://flo.uri.sh/visualisation/2145462/embed"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+            </td>
+        </tr>
     </table>
-    <div id="stats-chart"></div>
-    <h3 style="margin-top: 30px;"><b>Количество заражённых по федеральным округам и субъектам России</b></h3>
-    <div class="flourish-embed flourish-bar-chart-race" data-src="visualisation/2145462" data-url="https://flo.uri.sh/visualisation/2145462/embed"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
 
     <footer class="pt-4 text-muted border-top">
         <div class="container">

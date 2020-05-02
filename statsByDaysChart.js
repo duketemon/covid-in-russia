@@ -3,6 +3,7 @@ var statsByDaysChartOptions = {
     curveType: 'function',
     legend: { position: 'bottom' },
     pointSize: 8,
+    chartArea: {'height': '80%'},
     vAxis: {
         viewWindowMode:'explicit',
         viewWindow: {

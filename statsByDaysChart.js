@@ -3,7 +3,7 @@ var statsByDaysChartOptions = {
     curveType: 'function',
     legend: { position: 'bottom' },
     pointSize: 8,
-    chartArea: {'height': '80%'},
+    chartArea: {'height': '80%', 'width': '80%'},
     vAxis: {
         viewWindowMode:'explicit',
         viewWindow: {
@@ -47,7 +47,6 @@ function generateStatsByDaysChart(subject_name) {
     }
     return data;
 }
-
 
 function updateStatsDataHandler(obj) {
     var subject_name = obj.innerText;

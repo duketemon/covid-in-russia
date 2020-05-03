@@ -1,4 +1,4 @@
-*{
+* {
     padding: 0;
     margin: 0;
 }
@@ -36,11 +36,6 @@ h1, h3, h5 {
     font-weight: bold;
 }
 
-#stats-chart {
-    width: 100%; 
-    height: 600px;
-}
-
 #subjects-list {
     margin-left: 11px;
     width: 300px;
@@ -56,4 +51,9 @@ h1, h3, h5 {
 
 #stats-by-day-buttons-block {
     margin-top: 5px;
+}
+
+#stats-chart {
+    width: 100%; 
+    height: 600px;
 }

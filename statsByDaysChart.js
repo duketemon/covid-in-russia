@@ -3,16 +3,26 @@ var statsByDaysChartOptions = {
     curveType: 'function',
     legend: { position: 'bottom' },
     pointSize: 8,
-    chartArea: {'height': '80%', 'width': '80%'},
+    chartArea: {'height': '80%', 'width': '90%'},
     vAxis: {
         viewWindowMode:'explicit',
         viewWindow: {
             min:0
+        },
+        textStyle : {
+            fontSize: 12,
+            color: "#999999"
+        }
+    },
+    hAxis: {
+        textStyle : {
+            fontSize: 12,
+            color: "#999999"
         }
     },
     series: {
         0: { color: '#d50000', lineWidth: 5 },
-        1: { color: '#ffd600', lineWidth: 5 },
+        1: { color: '#00c853', lineWidth: 5 },
         2: { color: '#212121', lineWidth: 5 },
     }
 };
@@ -33,7 +43,7 @@ function generateStatsByDaysChart(subject_name) {
     var raw_data = STATS_DATA[subject_name];
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Дата');
-    data.addColumn('number', 'Количество заболевших');
+    data.addColumn('number', 'Количество заражённых');
     data.addColumn('number', 'Количество выздоровивших');
     data.addColumn('number', 'Количество умерших');
     for(var i=0; i<raw_data["dates"].length; i++) {

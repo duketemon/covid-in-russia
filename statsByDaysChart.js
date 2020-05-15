@@ -4,6 +4,9 @@ var statsByDaysChartOptions = {
     legend: { position: 'bottom' },
     pointSize: 8,
     chartArea: {'height': '80%', 'width': '90%'},
+    annotations: {
+        style: 'line'
+    },
     vAxis: {
         viewWindowMode:'explicit',
         viewWindow: {
@@ -38,18 +41,37 @@ function buildStatsByDaysChart(subject_name) {
     chart.draw(data, statsByDaysChartOptions);
 }
 
+special_dates = {
+    "30.03": ["Начало нерабочих дней", "Начался единый период нерабочих дней"],
+    "12.05": ["Конец нерабочих дней", "Завершился единый период нерабочих дней"],
+}
+
 function generateStatsByDaysChart(subject_name) {
     statsByDaysChartOptions['title'] = `Статистика по дням (${subject_name})`;
     var raw_data = STATS_DATA[subject_name];
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Дата');
+    data.addColumn({type: 'string', role: 'annotation'});
+    data.addColumn({type: 'string', role: 'annotationText'});
     data.addColumn('number', 'Количество заражённых');
     data.addColumn('number', 'Количество выздоровивших');
     data.addColumn('number', 'Количество умерших');
     for(var i=0; i<raw_data["dates"].length; i++) {
         values = raw_data["dates"][i].split('.');
+        date = values[2] + '.' + values[1];
+        if (date in special_dates) {
+            annotation = special_dates[date][0];
+            annotationText = special_dates[date][1];
+        }
+        else{
+            annotation = null;
+            annotationText = null;
+        }
+
         data.addRow([
-            values[2] + '.' + values[1],
+            date,
+            annotation,
+            annotationText,
             raw_data["infected"][i],
             raw_data["healed"][i],
             raw_data["died"][i]

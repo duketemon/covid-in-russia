@@ -9,9 +9,6 @@ var statsByDaysChartOptions = {
     },
     vAxis: {
         viewWindowMode:'explicit',
-        viewWindow: {
-            min:0
-        },
         textStyle : {
             fontSize: 12,
             color: "#999999"
@@ -24,9 +21,10 @@ var statsByDaysChartOptions = {
         }
     },
     series: {
-        0: { color: '#d50000', lineWidth: 5 },
-        1: { color: '#00c853', lineWidth: 5 },
-        2: { color: '#212121', lineWidth: 5 },
+        0: { color: '#1e88e5', lineWidth: 5 },
+        1: { color: '#d50000', lineWidth: 5 },
+        2: { color: '#00c853', lineWidth: 5 },
+        3: { color: '#212121', lineWidth: 5 },
     }
 };
 
@@ -53,10 +51,12 @@ function generateStatsByDaysChart(subject_name) {
     data.addColumn('string', 'Дата');
     data.addColumn({type: 'string', role: 'annotation'});
     data.addColumn({type: 'string', role: 'annotationText'});
-    data.addColumn('number', 'Количество заражённых');
+    data.addColumn('number', 'Прирост количества заражённых');
+    data.addColumn('number', 'Количество новых случаев заражения');
     data.addColumn('number', 'Количество выздоровивших');
     data.addColumn('number', 'Количество умерших');
-    for(var i=0; i<raw_data["dates"].length; i++) {
+    
+    for(var i=1; i<raw_data["dates"].length; i++) {
         values = raw_data["dates"][i].split('.');
         date = values[2] + '.' + values[1];
         if (date in special_dates) {
@@ -68,13 +68,18 @@ function generateStatsByDaysChart(subject_name) {
             annotationText = null;
         }
 
+        let new_infected_cases_count = raw_data["infected"][i] - raw_data["infected"][i-1];
+        let new_healed_cases_count = raw_data["healed"][i] - raw_data["healed"][i-1];
+        let new_died_cases_count = raw_data["died"][i] - raw_data["died"][i-1];
+        let infected_uplift = new_infected_cases_count - new_healed_cases_count - new_died_cases_count;
         data.addRow([
             date,
             annotation,
             annotationText,
-            raw_data["infected"][i],
-            raw_data["healed"][i],
-            raw_data["died"][i]
+            infected_uplift,
+            new_infected_cases_count,
+            new_healed_cases_count,
+            new_died_cases_count
         ]);
     }
     return data;

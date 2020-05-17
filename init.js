@@ -6,29 +6,36 @@ function beautifyNumber(number) {
     return number.toString();
 }
 
-var position = STATS_DATA["Россия"]["infected"].length-1;
-$('#infected-number')[0].innerText = beautifyNumber(STATS_DATA["Россия"]["infected"][position]);
-$('#healed-number')[0].innerText = beautifyNumber(STATS_DATA["Россия"]["healed"][position]);
-$('#died-number')[0].innerText = beautifyNumber(STATS_DATA["Россия"]["died"][position]);
-
-new_infected_cases = STATS_DATA["Россия"]["infected"][position] - STATS_DATA["Россия"]["infected"][position-1];
-if (new_infected_cases >= 0) {
-    new_infected_cases = '+' + beautifyNumber(new_infected_cases);
+function beautifyNumberWithSign(number) {
+    if (number > 0) {
+        return '+' + beautifyNumber(number);
+    }
+    return beautifyNumber(number);
 }
 
-new_healed_cases = STATS_DATA["Россия"]["healed"][position] - STATS_DATA["Россия"]["healed"][position-1];
-if (new_healed_cases >= 0) {
-    new_healed_cases = '+' + beautifyNumber(new_healed_cases);
-}
 
-new_died_cases = STATS_DATA["Россия"]["died"][position] - STATS_DATA["Россия"]["died"][position-1];
-if (new_died_cases >= 0) {
-    new_died_cases = '+' + beautifyNumber(new_died_cases);
-}
+let lastDayPosition = STATS_DATA["Россия"]["infected"].length-1;
+let lastDayTotalHealedNumber = STATS_DATA["Россия"]["healed"][lastDayPosition];
+let lastDayTotalDiedNumber = STATS_DATA["Россия"]["died"][lastDayPosition];
+let lastDayTotalInfectedNumber = STATS_DATA["Россия"]["infected"][lastDayPosition];
+let lastDayCurrentInfectedNumber = lastDayTotalInfectedNumber - lastDayTotalHealedNumber - lastDayTotalDiedNumber;
 
-$('#new-infected-cases')[0].innerText = new_infected_cases;
-$('#new-healed-cases')[0].innerText = new_healed_cases;
-$('#new-died-cases')[0].innerText = new_died_cases;
+$('#total-infected-number')[0].innerText = beautifyNumber(lastDayTotalInfectedNumber);
+$('#current-infected-number')[0].innerText = beautifyNumber(lastDayCurrentInfectedNumber);
+$('#total-healed-number')[0].innerText = beautifyNumber(lastDayTotalHealedNumber);
+$('#total-died-number')[0].innerText = beautifyNumber(lastDayTotalDiedNumber);
+
+
+let lastDayTotalInfectedNumberUplift = lastDayTotalInfectedNumber - STATS_DATA["Россия"]["infected"][lastDayPosition-1];
+let lastDayTotalHealedNumberUplift = lastDayTotalHealedNumber - STATS_DATA["Россия"]["healed"][lastDayPosition-1];
+let lastDayTotalDiedNumberUplift = lastDayTotalDiedNumber - STATS_DATA["Россия"]["died"][lastDayPosition-1];
+let lastDayCurrentInfectedNumberUplift = lastDayTotalInfectedNumberUplift - lastDayTotalHealedNumberUplift - lastDayTotalDiedNumberUplift;
+
+
+$('#total-infected-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalInfectedNumberUplift);
+$('#current-infected-uplift')[0].innerText = beautifyNumberWithSign(lastDayCurrentInfectedNumberUplift);
+$('#total-healed-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalHealedNumberUplift);
+$('#total-died-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalDiedNumberUplift);
 
 
 $(function() {

@@ -21,7 +21,7 @@ var statsByDaysChartOptions = {
         }
     },
     series: {
-        0: { color: '#1e88e5', lineWidth: 5 },
+        0: { color: '#ef9a9a', lineWidth: 4, pointSize: 6, lineDashStyle: [4, 2]},
         1: { color: '#d50000', lineWidth: 5 },
         2: { color: '#00c853', lineWidth: 5 },
         3: { color: '#212121', lineWidth: 5 },

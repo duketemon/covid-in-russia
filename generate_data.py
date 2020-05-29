@@ -71,7 +71,7 @@ with open(output_filename, 'a') as f:
 
 
 # Генерация данных для графика "Количество заражённых по федеральным округам и субъектам России"
-timeline_data_infected, timeline_data_healed, timeline_data_died = dict(), dict(), dict()
+timeline_data_infected = dict()
 for d in DATA['Россия']['dates']:
     timeline_data_infected[d] = list()
 

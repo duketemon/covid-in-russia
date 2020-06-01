@@ -35,6 +35,7 @@ google.charts.setOnLoadCallback(() => {
 });
 
 function buildStatsByDaysChart(subject_name) {
+    updateGeneralStats(subject_name);
     var data = generateStatsByDaysChart(subject_name);
     chart.draw(data, statsByDaysChartOptions);
 }

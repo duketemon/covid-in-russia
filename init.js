@@ -1,43 +1,6 @@
-function beautifyNumber(number) {
-    if (number >= 1000) {
-        var s = number.toString();
-        return s.slice(0, s.length-3) + ' ' + s.slice(s.length-3);
-    }
-    return number.toString();
-}
+updateGeneralStats("Россия");
 
-function beautifyNumberWithSign(number) {
-    if (number > 0) {
-        return '+' + beautifyNumber(number);
-    }
-    return beautifyNumber(number);
-}
-
-
-let lastDayPosition = STATS_DATA["Россия"]["infected"].length-1;
-let lastDayTotalHealedNumber = STATS_DATA["Россия"]["healed"][lastDayPosition];
-let lastDayTotalDiedNumber = STATS_DATA["Россия"]["died"][lastDayPosition];
-let lastDayTotalInfectedNumber = STATS_DATA["Россия"]["infected"][lastDayPosition];
-let lastDayCurrentInfectedNumber = lastDayTotalInfectedNumber - lastDayTotalHealedNumber - lastDayTotalDiedNumber;
-
-$('#total-infected-number')[0].innerText = beautifyNumber(lastDayTotalInfectedNumber);
-$('#current-infected-number')[0].innerText = beautifyNumber(lastDayCurrentInfectedNumber);
-$('#total-healed-number')[0].innerText = beautifyNumber(lastDayTotalHealedNumber);
-$('#total-died-number')[0].innerText = beautifyNumber(lastDayTotalDiedNumber);
-
-
-let lastDayTotalInfectedNumberUplift = lastDayTotalInfectedNumber - STATS_DATA["Россия"]["infected"][lastDayPosition-1];
-let lastDayTotalHealedNumberUplift = lastDayTotalHealedNumber - STATS_DATA["Россия"]["healed"][lastDayPosition-1];
-let lastDayTotalDiedNumberUplift = lastDayTotalDiedNumber - STATS_DATA["Россия"]["died"][lastDayPosition-1];
-let lastDayCurrentInfectedNumberUplift = lastDayTotalInfectedNumberUplift - lastDayTotalHealedNumberUplift - lastDayTotalDiedNumberUplift;
-
-
-$('#total-infected-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalInfectedNumberUplift);
-$('#current-infected-uplift')[0].innerText = beautifyNumberWithSign(lastDayCurrentInfectedNumberUplift);
-$('#total-healed-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalHealedNumberUplift);
-$('#total-died-uplift')[0].innerText = beautifyNumberWithSign(lastDayTotalDiedNumberUplift);
-
-
+// Upload data for the list of subjects
 $(function() {
     $("#subjects-list").autocomplete({
         source: function(request, response) {
@@ -46,3 +9,25 @@ $(function() {
                 }
     });
 });
+
+
+// Init the world values
+let worldTotalInfectedNumber = parseInt("6063725");
+let worldTotalInfectedNumberUplift = parseInt("106831");
+
+let worldTotalDiedNumber = parseInt("372099");
+let worldTotalDiedNumberUplift = parseInt("2855");
+
+let worldTotalHealedNumber = parseInt("2642188");
+let worldTotalHealedNumberUplift = parseInt("76153");
+
+let worldCurrentInfectedNumber = worldTotalInfectedNumber - worldTotalHealedNumber - worldTotalDiedNumber;
+let worldCurrentInfectedNumberUplift = worldTotalInfectedNumberUplift - worldTotalHealedNumberUplift - worldTotalDiedNumberUplift;
+
+
+$('#world-total-infected-number')[0].innerText = `${beautifyNumber(worldTotalInfectedNumber)} (${beautifyNumberWithSign(worldTotalInfectedNumberUplift)})`;
+$('#world-current-infected-number')[0].innerText = `${beautifyNumber(worldCurrentInfectedNumber)} (${beautifyNumberWithSign(worldCurrentInfectedNumberUplift)})`;
+$('#world-total-healed-number')[0].innerText = `${beautifyNumber(worldTotalHealedNumber)} (${beautifyNumberWithSign(worldTotalHealedNumberUplift)})`;
+$('#world-total-died-number')[0].innerText = `${beautifyNumber(worldTotalDiedNumber)} (${beautifyNumberWithSign(worldTotalDiedNumberUplift)})`;
+let mortality = 100 * worldTotalDiedNumber / (worldTotalHealedNumber + worldTotalDiedNumber)
+$('#world-mortality-number')[0].innerText = mortality.toFixed(2) + `%`;

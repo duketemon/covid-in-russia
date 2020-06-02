@@ -63,83 +63,8 @@ for d in DATA['Россия']['dates']:
     DATA['Россия']['healed'].append(sum(RUSSIA_DATA[d]['healed']))
     DATA['Россия']['died'].append(sum(RUSSIA_DATA[d]['died']))
 
-# Генерация данных для графика ""
+
 output_filename = 'stats.js'
 os.system(f'echo "STATS_DATA = " > {output_filename}')
 with open(output_filename, 'a') as f:
     json.dump(DATA, f, ensure_ascii=False)
-
-
-# Генерация данных для графика "Количество заражённых по федеральным округам и субъектам России"
-timeline_data_infected = dict()
-for d in DATA['Россия']['dates']:
-    timeline_data_infected[d] = list()
-
-for subject in df_subject_districts['Субъект']:
-    if not all([len(timeline_data_infected['20.03.26']) == len(timeline_data_infected[key]) for key in timeline_data_infected]):
-        print(subject)
-    for i, date in enumerate(DATA[subject]['dates']):
-        timeline_data_infected[date].append(DATA[subject]['infected'][i])
-    empty_values = sorted(timeline_data_infected.keys())[:len(DATA['Россия']['dates'])-len(DATA[subject]['dates'])]
-    for date in empty_values:
-        timeline_data_infected[date].append(0)
-
-
-def get_date(text: str):
-    _, mm, dd = text.split('.')
-    return f'{dd}.{mm}'
-
-
-def save_timeline_data(filename, timeline_data):
-    output_data = {
-        'Субъект': df_subject_districts['Субъект'],
-        'Федеральный Округ': df_subject_districts['Федеральный Округ'],
-    }
-
-    for key, values in timeline_data.items():
-        output_data[get_date(key)] = values
-
-    pd.DataFrame(data=output_data).to_csv(filename, index=False)
-
-
-save_timeline_data('data-infected.csv', timeline_data_infected)
-
-# Генерация данных для графика "Ежедневный прирост заражённых по всей России"
-infected_uplift = {
-    'Дата': [],
-    'Количество новых случаев': []
-}
-for i in range(1, len(DATA['Россия']['dates'])):
-    date = get_date(DATA['Россия']['dates'][i])
-    cur_day, prev_day = DATA['Россия']['infected'][i], DATA['Россия']['infected'][i-1]
-    infected_uplift['Дата'].append(date)
-    infected_uplift['Количество новых случаев'].append(cur_day - prev_day)
-pd.DataFrame(data=infected_uplift).to_csv('data-infected-uplift.csv', index=False)
-
-# Генерация данных для графика "Ежедневный прирост вылечившихся и умерших по всей России"
-healed_died_uplift = {
-    'Дата': [],
-    'Вылечившихся': [],
-    'Умерших': [],
-}
-for i in range(1, len(DATA['Россия']['dates'])):
-    date = get_date(DATA['Россия']['dates'][i])
-    healed_died_uplift['Дата'].append(date)
-
-    cur_day, prev_day = DATA['Россия']['healed'][i], DATA['Россия']['healed'][i-1]
-    healed_died_uplift['Вылечившихся'].append(cur_day - prev_day)
-
-    cur_day, prev_day = DATA['Россия']['died'][i], DATA['Россия']['died'][i-1]
-    healed_died_uplift['Умерших'].append(-(cur_day - prev_day))
-pd.DataFrame(data=healed_died_uplift).to_csv('data-healed-died-uplift.csv', index=False)
-
-
-# Генерация данных для графика "Текущее количество зараженных по федеральным округам и субъектам РФ"
-current_infected = {
-    'Субъект': df_subject_districts['Субъект'],
-    'Федеральный Округ': df_subject_districts['Федеральный Округ'],
-    'Количество зараженных': []
-}
-for subject in df_subject_districts['Субъект']:
-    current_infected['Количество зараженных'].append(DATA[subject]['infected'][-1] - DATA[subject]['healed'][-1] - DATA[subject]['died'][-1])
-pd.DataFrame(data=current_infected).to_csv('data-current-infected.csv', index=False)

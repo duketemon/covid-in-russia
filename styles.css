@@ -11,6 +11,8 @@ body {
 }
 
 header {
+    margin-top: 10px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
@@ -44,6 +46,11 @@ td {
     width: 520px;
     height: 2em;
     border: silver 1px solid ;
+}
+
+
+#general-stats-row {
+    height: 112px;
 }
 
 

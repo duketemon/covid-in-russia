@@ -18,81 +18,88 @@
 <body>
     <header>
         <h1><b>Эпидемия коронавируса в России</b></h1>
-        <h5>Данные оперативного штаба по заболевшим коронавирусом в России на 1 июня</h5>
+        <h5>Данные оперативного штаба по заболевшим коронавирусом в России на 2 июня</h5>
     </header>
     <table>
-        <tr id="subject-buttons-row">
-            <td colspan="3">
-                <button id="russia-btn" type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" style="font-weight: bold;">Россия</button>
-                <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Москва</button>
-                <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Московская Область</button>
-                <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Санкт-Петербург</button>
-                <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Нижегородская Область</button>
-                <!-- <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Свердловская Область</button> -->
-                <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)">Пермский Край</button>
-            </td>
-            <td colspan="2">
-                <input id="subjects-list" class="ui-autocomplete-input" autocomplete="off">
-                <button type="button" class="btn btn-outline-primary"  onclick="buildStatsChartHandler()">Показать</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="alert alert-primary content-cell-block" role="alert">
-                    <h4 id="total-infected-number" class="alert-heading numbers-label">0</h4>
-                    <p>Выявлено заболевших</p>
-                </div>
-            </td>
-            <td>
-                <div class="alert alert-danger content-cell-block" role="alert">
-                    <h4 id="current-infected-number" class="alert-heading numbers-label">0</h4>
-                    <p>Число активных случаев</p>
-                </div>
-            </td>
-            <td>
-                <div class="alert alert-success content-cell-block" role="alert">
-                    <h4 id="total-healed-number" class="alert-heading numbers-label">0</h4>
-                    <p>Человек выздоровело</p>
-                </div>
-            </td>
-            <td>
-                <div class="alert alert-dark content-cell-block" role="alert">
-                    <h4 id="total-died-number" class="alert-heading numbers-label">0</h4>
-                    <p>Человек умерло</p>
-                </div>
-            </td>
-            <td>
-                <div class="alert alert-warning content-cell-block" role="alert">
-                    <h4 id="mortality-number" class="alert-heading numbers-label">0</h4>
-                    <p>Смертность</p>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <div id="stats-chart"></div>
-            </td>
-            <td>
-                <div class="alert alert-info content-cell-block" role="alert">
-                    <h4 class="alert-heading"><b>Ситуация в мире</b></h4>
+        <tbody>
+            <tr id="subject-buttons-row">
+                <td colspan="3">
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Россия" style="font-weight: bold;">Россия</button>
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Москва">Москва</button>
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Московская Область">Московская Область</button>
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Санкт-Петербург">Санкт-Петербург</button>
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Нижегородская Область">Нижегородская Область</button>
+                    <button type="button" class="btn btn-primary" onclick="updateStatsDataHandler(this)" data-subject-name="Пермский Край">Пермский Край</button>
+                </td>
+                <td colspan="2">
+                    <input id="subjects-list" class="ui-autocomplete-input" autocomplete="off">
+                    <button type="button" class="btn btn-outline-primary"  onclick="buildStatsChartHandler()">Показать</button>
+                </td>
+            </tr>
+            <tr id="general-stats-row">
+                <td>
+                    <div class="alert alert-primary content-cell-block" role="alert">
+                        <h4 id="total-infected-number" class="alert-heading numbers-label">0</h4>
+                        <p>Выявлено заболевших</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="alert alert-danger content-cell-block" role="alert">
+                        <h4 id="current-infected-number" class="alert-heading numbers-label">0</h4>
+                        <p>Активных случаев</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="alert alert-success content-cell-block" role="alert">
+                        <h4 id="total-healed-number" class="alert-heading numbers-label">0</h4>
+                        <p>Человек выздоровело</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="alert alert-dark content-cell-block" role="alert">
+                        <h4 id="total-died-number" class="alert-heading numbers-label">0</h4>
+                        <p>Человек умерло</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="alert alert-warning content-cell-block" role="alert">
+                        <h4 id="mortality-number" class="alert-heading numbers-label">0</h4>
+                        <p>Смертность</p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div id="stats-chart"></div>
+                </td>
+                <td>
+                    <div class="alert alert-info content-cell-block" role="alert">
+                        <b><span id="highest-mortality-subject">субъект</span></b> – субъект с самым высоким уровнем смертности (<span id="highest-mortality-subject-value">0</span>%)
+                        <br>
+                        <b><span id="highest-infected-uplift-subject">субъект</span></b> – субъект с самым высоким приростом активных случаев (+<span id="highest-infected-uplift-subject-value">0</span>)
+                    </div>
                     <br>
-                    <h4 id="world-total-infected-number" class="alert-heading numbers-label">0</h4>
-                    <p>Выявлено заболевших</p>
-                    <hr>
-                    <h4 id="world-current-infected-number" class="alert-heading numbers-label">0</h4>
-                    <p>Число активных случаев</p>
-                    <hr>
-                    <h4 id="world-total-healed-number" class="alert-heading numbers-label">0</h4>
-                    <p>Человек выздоровело</p>
-                    <hr>
-                    <h4 id="world-total-died-number" class="alert-heading numbers-label">0</h4>
-                    <p>Человек умерло</p>
-                    <hr>
-                    <h4 id="world-mortality-number" class="alert-heading numbers-label">0</h4>
-                    <p>Смертность</p>
-                </div> 
-            </td>
-        </tr>
+                    <div class="alert alert-info content-cell-block" role="alert">
+                        <h4 class="alert-heading"><b>Ситуация в мире</b></h4>
+                        <br>
+                        <h4 id="world-total-infected-number" class="alert-heading numbers-label">0</h4>
+                        <p>Выявлено заболевших</p>
+                        <hr>
+                        <h4 id="world-current-infected-number" class="alert-heading numbers-label">0</h4>
+                        <p>Активных случаев</p>
+                        <hr>
+                        <h4 id="world-total-healed-number" class="alert-heading numbers-label">0</h4>
+                        <p>Человек выздоровело</p>
+                        <hr>
+                        <h4 id="world-total-died-number" class="alert-heading numbers-label">0</h4>
+                        <p>Человек умерло</p>
+                        <hr>
+                        <h4 id="world-mortality-number" class="alert-heading numbers-label">0</h4>
+                        <p>Смертность</p>
+                    </div> 
+                </td>
+            </tr>
+        </tbody>
     </table>
     <footer class="pt-4 text-muted border-top">
         <p>Набор данных доступен в <a href="https://github.com/duketemon/covid-russia">GitHub репозитории</a></p>

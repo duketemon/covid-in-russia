@@ -19,23 +19,77 @@ function beautifyNumberWithSign(number) {
     return beautifyNumber(number);
 }
 
+function getInfectedHealedDiedValuesByDayNumber(subject, dayNumber) {
+    return [
+        STATS_DATA[subject]["infected"][dayNumber],
+        STATS_DATA[subject]["healed"][dayNumber],
+        STATS_DATA[subject]["died"][dayNumber]
+    ]
+}
+
+
 function updateGeneralStats(subject) {
-    let lastDayPosition = STATS_DATA[subject]["infected"].length-1;
-    let lastDayTotalHealedNumber = STATS_DATA[subject]["healed"][lastDayPosition];
-    let lastDayTotalDiedNumber = STATS_DATA[subject]["died"][lastDayPosition];
-    let lastDayTotalInfectedNumber = STATS_DATA[subject]["infected"][lastDayPosition];
-    let lastDayCurrentInfectedNumber = lastDayTotalInfectedNumber - lastDayTotalHealedNumber - lastDayTotalDiedNumber;
+    let todayPosition = STATS_DATA[subject]["infected"].length-1;
+    var values = getInfectedHealedDiedValuesByDayNumber(subject, todayPosition);
     
-    let lastDayTotalInfectedNumberUplift = lastDayTotalInfectedNumber - STATS_DATA[subject]["infected"][lastDayPosition-1];
-    let lastDayTotalHealedNumberUplift = lastDayTotalHealedNumber - STATS_DATA[subject]["healed"][lastDayPosition-1];
-    let lastDayTotalDiedNumberUplift = lastDayTotalDiedNumber - STATS_DATA[subject]["died"][lastDayPosition-1];
-    let lastDayCurrentInfectedNumberUplift = lastDayTotalInfectedNumberUplift - lastDayTotalHealedNumberUplift - lastDayTotalDiedNumberUplift;
+    let todayTotalInfectedNumber = values[0];
+    let todayTotalHealedNumber = values[1];
+    let todayTotalDiedNumber = values[2];
+    let todayCurrentInfectedNumber = todayTotalInfectedNumber - todayTotalHealedNumber - todayTotalDiedNumber;
+
+    var values = getInfectedHealedDiedValuesByDayNumber(subject, todayPosition-1);
+    let totalInfectedUplift = todayTotalInfectedNumber - values[0];
+    let totalHealedUplift = todayTotalHealedNumber - values[1];
+    let totalDiedUplift = todayTotalDiedNumber - values[2];
+    let currentInfectedUplift = totalInfectedUplift - totalHealedUplift - totalDiedUplift;
     
-    $('#total-infected-number')[0].innerText = `${beautifyNumber(lastDayTotalInfectedNumber)} (${beautifyNumberWithSign(lastDayTotalInfectedNumberUplift)})`;
-    $('#current-infected-number')[0].innerText = `${beautifyNumber(lastDayCurrentInfectedNumber)} (${beautifyNumberWithSign(lastDayCurrentInfectedNumberUplift)})`;
-    $('#total-healed-number')[0].innerText = `${beautifyNumber(lastDayTotalHealedNumber)} (${beautifyNumberWithSign(lastDayTotalHealedNumberUplift)})`;
-    $('#total-died-number')[0].innerText = `${beautifyNumber(lastDayTotalDiedNumber)} (${beautifyNumberWithSign(lastDayTotalDiedNumberUplift)})`;
-    let mortality = 100 * lastDayTotalDiedNumber / (lastDayTotalHealedNumber + lastDayTotalDiedNumber)
+    $('#total-infected-number')[0].innerText = `${beautifyNumber(todayTotalInfectedNumber)} (${beautifyNumberWithSign(totalInfectedUplift)})`;
+    $('#current-infected-number')[0].innerText = `${beautifyNumber(todayCurrentInfectedNumber)} (${beautifyNumberWithSign(currentInfectedUplift)})`;
+    $('#total-healed-number')[0].innerText = `${beautifyNumber(todayTotalHealedNumber)} (${beautifyNumberWithSign(totalHealedUplift)})`;
+    $('#total-died-number')[0].innerText = `${beautifyNumber(todayTotalDiedNumber)} (${beautifyNumberWithSign(totalDiedUplift)})`;
+    let mortality = 100 * todayTotalDiedNumber / (todayTotalHealedNumber + todayTotalDiedNumber);
     $('#mortality-number')[0].innerText = mortality.toFixed(2) + `%`;
+}
+
+
+function getHighestInfectedUplift() {
+    var subject = '';
+    var value = -1;
+    RF_SUBJECTS.forEach(subj => {
+        let todayPosition = STATS_DATA[subj]["infected"].length-1;
+        var values = getInfectedHealedDiedValuesByDayNumber(subj, todayPosition);
+        let todayTotalInfectedNumber = values[0];
+        let todayTotalHealedNumber = values[1];
+        let todayTotalDiedNumber = values[2];
+    
+        var values = getInfectedHealedDiedValuesByDayNumber(subj, todayPosition-1);
+        let totalInfectedUplift = todayTotalInfectedNumber - values[0];
+        let totalHealedUplift = todayTotalHealedNumber - values[1];
+        let totalDiedUplift = todayTotalDiedNumber - values[2];
+        let currentInfectedUplift = totalInfectedUplift - totalHealedUplift - totalDiedUplift;
+        if (currentInfectedUplift > value) {
+            value = currentInfectedUplift;
+            subject = subj;
+        }
+    });
+    console.log(subject, value);
+    return [subject, value];
+}
+
+
+function getHighestMortalitySubject() {
+    var subject = '';
+    var value = -1;
+    RF_SUBJECTS.forEach(subj => {
+        let lastDayPosition = STATS_DATA[subj]["infected"].length-1;
+        let died = STATS_DATA[subj]["died"][lastDayPosition];
+        let healed = STATS_DATA[subj]["healed"][lastDayPosition];
+        let cur_value = died / (healed+died);
+        if (cur_value > value) {
+            value = cur_value;
+            subject = subj;
+        }
+    });
+    return [subject, value];
 }
 

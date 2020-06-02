@@ -12,14 +12,14 @@ $(function() {
 
 
 // Init the world values
-let worldTotalInfectedNumber = parseInt("6063725");
-let worldTotalInfectedNumberUplift = parseInt("106831");
+let worldTotalInfectedNumber = parseInt("6325303");
+let worldTotalInfectedNumberUplift = parseInt("99699");
 
-let worldTotalDiedNumber = parseInt("372099");
-let worldTotalDiedNumberUplift = parseInt("2855");
+let worldTotalHealedNumber = parseInt("2727679");
+let worldTotalHealedNumberUplift = parseInt("52109");
 
-let worldTotalHealedNumber = parseInt("2642188");
-let worldTotalHealedNumberUplift = parseInt("76153");
+let worldTotalDiedNumber = parseInt("377460");
+let worldTotalDiedNumberUplift = parseInt("3598");
 
 let worldCurrentInfectedNumber = worldTotalInfectedNumber - worldTotalHealedNumber - worldTotalDiedNumber;
 let worldCurrentInfectedNumberUplift = worldTotalInfectedNumberUplift - worldTotalHealedNumberUplift - worldTotalDiedNumberUplift;
@@ -31,3 +31,13 @@ $('#world-total-healed-number')[0].innerText = `${beautifyNumber(worldTotalHeale
 $('#world-total-died-number')[0].innerText = `${beautifyNumber(worldTotalDiedNumber)} (${beautifyNumberWithSign(worldTotalDiedNumberUplift)})`;
 let mortality = 100 * worldTotalDiedNumber / (worldTotalHealedNumber + worldTotalDiedNumber)
 $('#world-mortality-number')[0].innerText = mortality.toFixed(2) + `%`;
+
+
+// Init some highest metrics for the whole Russia
+let highestMortalityValues = getHighestMortalitySubject();
+$('#highest-mortality-subject')[0].innerText = highestMortalityValues[0];
+$('#highest-mortality-subject-value')[0].innerText = (100 * highestMortalityValues[1]).toFixed(2);
+
+let highestInfectedUpliftValues = getHighestInfectedUplift();
+$('#highest-infected-uplift-subject')[0].innerText = highestInfectedUpliftValues[0];
+$('#highest-infected-uplift-subject-value')[0].innerText = highestInfectedUpliftValues[1];

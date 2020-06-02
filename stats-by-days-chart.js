@@ -1,5 +1,5 @@
 var statsByDaysChartOptions = {
-    title: 'Статистика по дням',
+    title: 'Хронология вируса в России',
     curveType: 'function',
     legend: { position: 'bottom' },
     pointSize: 8,
@@ -46,7 +46,7 @@ special_dates = {
 }
 
 function generateStatsByDaysChart(subject_name) {
-    statsByDaysChartOptions['title'] = `Статистика по дням (${subject_name})`;
+    statsByDaysChartOptions['title'] = `Хронология распространения вируса (${subject_name})`;
     var raw_data = STATS_DATA[subject_name];
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Дата');
@@ -87,7 +87,7 @@ function generateStatsByDaysChart(subject_name) {
 }
 
 function updateStatsDataHandler(obj) {
-    var subject_name = obj.innerText;
+    let subject_name = $(obj).data('subject-name');
     buildStatsByDaysChart(subject_name);
 }
 

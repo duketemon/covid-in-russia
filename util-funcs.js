@@ -1,6 +1,6 @@
 function beautifyNumber(number) {
     var values = [];
-    let s = number.toString();
+    let s = Math.abs(number).toString();
     for (var i=s.length-1; i>=0; i--) {
         if (values.length % 3 == 0) {
             values.push(s[i] + " ");
@@ -9,7 +9,11 @@ function beautifyNumber(number) {
             values.push(s[i]);
         }
     }
-    return values.reverse().join("").trimEnd();
+    prefix = '';
+    if (number < 0) {
+        prefix = '-';
+    }
+    return prefix + values.reverse().join("").trim();
 }
 
 function beautifyNumberWithSign(number) {

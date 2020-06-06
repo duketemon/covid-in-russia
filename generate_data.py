@@ -1,70 +1,44 @@
 import os
 import json
+import numpy as np
 import pandas as pd
-from collections import defaultdict
-
-
-def clean_subject_name(subject_name):
-    subject_name = subject_name.replace('–', '—')
-    subject_name = subject_name.replace('автономный округ', 'АО')
-    subject_name = subject_name.replace('автономная область', 'АО')
-    subject_name = subject_name.replace('республика', 'Республика')
-    subject_name = subject_name.replace('область', 'Область')
-    subject_name = subject_name.replace('край', 'Край')
-    subject_name = subject_name.replace('Республика Чечня', 'Чеченская Республика')
-    subject_name = subject_name.replace('Республика Чувашия', 'Чувашская Республика')
-    subject_name = subject_name.replace('Республика Удмуртия', 'Удмуртская Республика')
-    subject_name = subject_name.replace('Республика Кабардино-Балкария', 'Кабардино-Балкарская Республика')
-    subject_name = subject_name.replace('Республика Карачаево-Черкесия', 'Карачаево-Черкесская Республика')
-    subject_name = subject_name.strip()
-    if 'Республика Северная Осетия' == subject_name:
-        subject_name = subject_name.replace('Республика Северная Осетия', 'Республика Северная Осетия — Алания')
-    return subject_name
-
-
-def extract_info_from_line(line: str):
-    text, healed, died = line.split('/')
-    values = text.split('–')
-    infected = values[-1]
-    subject_name = '–'.join(values[:-1])
-    subject_name = clean_subject_name(subject_name)
-    if subject_name not in SUBJECTS:
-        print(f'Problem with "{subject_name}"')
-    return subject_name, int(infected.replace(' ', '')), int(healed.replace(' ', '')), int(died.replace(' ', ''))
 
 
 def start_processing(data_path):
-    data = defaultdict(lambda: defaultdict(list))
-    for filename in sorted(os.listdir(data_path)):
-        with open(data_path + filename) as f:
-            print(filename)
-            for line in f.read().split('\n'):
-                subject, infected, healed, died = extract_info_from_line(line)
-                data[subject]['dates'].append(filename)
-                data[subject]['infected'].append(infected)
-                data[subject]['healed'].append(healed)
-                data[subject]['died'].append(died)
+    infected_df = pd.read_csv(data_path + 'data-infected.csv')
+    healed_df = pd.read_csv(data_path + 'data-healed.csv')
+    died_df = pd.read_csv(data_path + 'data-died.csv')
 
-                RUSSIA_DATA[filename]['infected'].append(infected)
-                RUSSIA_DATA[filename]['healed'].append(healed)
-                RUSSIA_DATA[filename]['died'].append(died)
-    return data
+    data = dict()
+    dates = infected_df.columns.tolist()[2:]
+    size = len(dates) 
+    russia_infected, russia_healed, russia_died = np.full(size, 0, dtype=int), np.full(size, 0, dtype=int), np.full(size, 0, dtype=int)
+    for subject in infected_df['Субъект'].values:
+        infected_values = infected_df[infected_df['Субъект'] == subject].values[0][2:]
+        russia_infected = russia_infected + infected_values
+        
+        healed_values = healed_df[healed_df['Субъект'] == subject].values[0][2:]
+        russia_healed = russia_healed + healed_values
+        
+        died_values = died_df[died_df['Субъект'] == subject].values[0][2:]
+        russia_died = russia_died + died_values
+
+        data[subject] = {
+            'infected': infected_values.tolist(),
+            'healed': healed_values.tolist(),
+            'died': died_values.tolist()
+        }
+    data['Россия'] = {
+        'infected': russia_infected.tolist(),
+        'healed': russia_healed.tolist(),
+        'died': russia_died.tolist()
+    }
+    return data, dates
 
 
-df_subject_districts = pd.read_csv('../covid-russia/rf-structure.csv')
-SUBJECTS = set(df_subject_districts['Субъект'])
-data_path = '../covid-russia/data/'
-RUSSIA_DATA = defaultdict(lambda: defaultdict(list))
-DATA = start_processing(data_path)
-
-DATA['Россия']['dates'] = sorted(list(RUSSIA_DATA.keys()))
-for d in DATA['Россия']['dates']:
-    DATA['Россия']['infected'].append(sum(RUSSIA_DATA[d]['infected']))
-    DATA['Россия']['healed'].append(sum(RUSSIA_DATA[d]['healed']))
-    DATA['Россия']['died'].append(sum(RUSSIA_DATA[d]['died']))
-
-
+data_path = '../covid-russia/'
+data, dates = start_processing(data_path)
 output_filename = 'stats.js'
-os.system(f'echo "STATS_DATA = " > {output_filename}')
+os.system(f'echo "STATS_DATES = {str(dates)}\nSTATS_DATA = " > {output_filename}')
 with open(output_filename, 'a') as f:
-    json.dump(DATA, f, ensure_ascii=False)
+    json.dump(data, f, ensure_ascii=False)

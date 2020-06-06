@@ -57,9 +57,8 @@ function generateStatsByDaysChart(subject_name) {
     data.addColumn('number', 'Количество выздоровивших');
     data.addColumn('number', 'Количество умерших');
     
-    for(var i=1; i<raw_data["dates"].length; i++) {
-        values = raw_data["dates"][i].split('.');
-        date = values[2] + '.' + values[1];
+    for(var i=1; i<STATS_DATES.length; i++) {
+        date = STATS_DATES[i];
         if (date in special_dates) {
             annotation = special_dates[date][0];
             annotationText = special_dates[date][1];

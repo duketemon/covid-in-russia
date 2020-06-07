@@ -76,7 +76,6 @@ function getHighestInfectedUplift() {
             subject = subj;
         }
     });
-    console.log(subject, value);
     return [subject, value];
 }
 

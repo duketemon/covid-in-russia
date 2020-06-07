@@ -58,29 +58,31 @@ function generateStatsByDaysChart(subject_name) {
     data.addColumn('number', 'Количество умерших');
     
     for(var i=1; i<STATS_DATES.length; i++) {
-        date = STATS_DATES[i];
-        if (date in special_dates) {
-            annotation = special_dates[date][0];
-            annotationText = special_dates[date][1];
+        if (raw_data["infected"][i] > 0) {
+            date = STATS_DATES[i];
+            if (date in special_dates) {
+                annotation = special_dates[date][0];
+                annotationText = special_dates[date][1];
+            }
+            else{
+                annotation = null;
+                annotationText = null;
+            }
+    
+            let new_infected_cases_count = raw_data["infected"][i] - raw_data["infected"][i-1];
+            let new_healed_cases_count = raw_data["healed"][i] - raw_data["healed"][i-1];
+            let new_died_cases_count = raw_data["died"][i] - raw_data["died"][i-1];
+            let infected_uplift = new_infected_cases_count - new_healed_cases_count - new_died_cases_count;
+            data.addRow([
+                date,
+                annotation,
+                annotationText,
+                infected_uplift,
+                new_infected_cases_count,
+                new_healed_cases_count,
+                new_died_cases_count
+            ]);
         }
-        else{
-            annotation = null;
-            annotationText = null;
-        }
-
-        let new_infected_cases_count = raw_data["infected"][i] - raw_data["infected"][i-1];
-        let new_healed_cases_count = raw_data["healed"][i] - raw_data["healed"][i-1];
-        let new_died_cases_count = raw_data["died"][i] - raw_data["died"][i-1];
-        let infected_uplift = new_infected_cases_count - new_healed_cases_count - new_died_cases_count;
-        data.addRow([
-            date,
-            annotation,
-            annotationText,
-            infected_uplift,
-            new_infected_cases_count,
-            new_healed_cases_count,
-            new_died_cases_count
-        ]);
     }
     return data;
 }
@@ -108,4 +110,5 @@ function buildStatsChartHandler() {
         return;
     }
     buildStatsByDaysChart(RF_SUBJECTS[subject_index]);
+    $('#subjects-list')[0].value = '';
 }

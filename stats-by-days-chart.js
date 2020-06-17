@@ -43,6 +43,7 @@ function buildStatsByDaysChart(subject_name) {
 special_dates = {
     "30.03": ["Начало нерабочих дней", "Начался единый период нерабочих дней"],
     "12.05": ["Конец нерабочих дней", "Завершился единый период нерабочих дней"],
+    "12.06": ["День России", "Празднование дня России"],
 }
 
 function generateStatsByDaysChart(subject_name) {

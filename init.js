@@ -12,14 +12,14 @@ $(function() {
 
 
 // Init the world values
-let worldTotalInfectedNumber = parseInt("10302867");
-let worldTotalInfectedNumberUplift = parseInt("156920");
+let worldTotalInfectedNumber = parseInt("10485763");
+let worldTotalInfectedNumberUplift = parseInt("182896");
 
-let worldTotalHealedNumber = parseInt("5235908");
-let worldTotalHealedNumberUplift = parseInt("93483");
+let worldTotalHealedNumber = parseInt("5366092");
+let worldTotalHealedNumberUplift = parseInt("118892");
 
-let worldTotalDiedNumber = parseInt("505518");
-let worldTotalDiedNumberUplift = parseInt("3620");
+let worldTotalDiedNumber = parseInt("511543");
+let worldTotalDiedNumberUplift = parseInt("5114");
 
 let worldCurrentInfectedNumber = worldTotalInfectedNumber - worldTotalHealedNumber - worldTotalDiedNumber;
 let worldCurrentInfectedNumberUplift = worldTotalInfectedNumberUplift - worldTotalHealedNumberUplift - worldTotalDiedNumberUplift;

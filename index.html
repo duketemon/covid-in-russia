@@ -14,11 +14,13 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>
     <header>
         <h1><b>Эпидемия коронавируса в России</b></h1>
-        <h5>Данные оперативного штаба по заболевшим коронавирусом в России на 15 августа</h5>
+        <h5>Данные оперативного штаба по заболевшим коронавирусом в России на 16 августа</h5>
     </header>
     <table>
         <tbody>
@@ -70,7 +72,14 @@
             </tr>
             <tr>
                 <td colspan="4">
-                    <div id="stats-chart"></div>
+                    <div id="stats-chart-title">
+                        <span id="selected-subject-name">Россия</span>. Хронология распространения вируса по
+                        <select id="group-by-selector">
+                            <option value="day">дням</option>
+                            <option value="week">неделям</option>
+                        </select>
+                    </div>
+                    <canvas id="stats-chart" style="background-color: transparent;"></canvas>
                 </td>
                 <td>
                     <div class="alert alert-info content-cell-block" role="alert">
@@ -112,5 +121,6 @@
 
 <script type="text/javascript" src="util-funcs.js"></script>
 <script type="text/javascript" src="init.js"></script>
-<script type="text/javascript" src="stats-by-days-chart.js"></script>
+<script type="text/javascript" src="stats-chart.js"></script>
+
 </html>

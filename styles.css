@@ -53,8 +53,18 @@ td {
     height: 112px;
 }
 
+#stats-chart-title {
+    display: inline-block;
+    font-size: 1.5em; 
+    background-color: transparent; 
+    margin-top: 0; 
+    margin-bottom: 10px;
+}
 
-#stats-chart {
-    height: 100%;
-    width: 100%;
+#stats-chart-title > select {
+    background-color: transparent;
+}
+
+#stats-chart-title, #stats-chart-title > select {
+    font-weight: bold;
 }

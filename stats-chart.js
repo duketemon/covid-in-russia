@@ -58,28 +58,43 @@ function generateStatsChartData(subjectName, groupBy) {
     let new_healed_cases = [];
     let new_died_cases = [];
 
-    var new_infected_cases_count = 0
-    var new_healed_cases_count = 0
-    var new_died_cases_count = 0
-    var counter = 0
+    var new_infected_cases_count = 0;
+    var new_healed_cases_count = 0;
+    var new_died_cases_count = 0;
+    var counter = 0;
 
+    var start_index = 0;
     for(var i=1; i<STATS_DATES.length; i++) {
         if (raw_data["infected"][i] > 0) {
-            counter += 1;
-            new_infected_cases_count += raw_data["infected"][i] - raw_data["infected"][i-1];
-            new_healed_cases_count += -(raw_data["healed"][i] - raw_data["healed"][i-1]);
-            new_died_cases_count += -(raw_data["died"][i] - raw_data["died"][i-1]);
-
-            if (counter > threshhold) {
-                dates.push(STATS_DATES[i])
-                new_infected_cases.push(new_infected_cases_count)
-                new_healed_cases.push(new_healed_cases_count)
-                new_died_cases.push(new_died_cases_count)
-                
-                counter = 0;
-                new_infected_cases_count = new_healed_cases_count = new_died_cases_count = 0;
-            }
+            start_index = i;
+            break;
         }
+    }
+
+    for(var i=start_index+1; i<STATS_DATES.length; i++) {
+        if (counter == 0) {
+            dates.push(STATS_DATES[i])
+        }
+
+        counter += 1;
+        new_infected_cases_count += raw_data["infected"][i] - raw_data["infected"][i-1];
+        new_healed_cases_count += -(raw_data["healed"][i] - raw_data["healed"][i-1]);
+        new_died_cases_count += -(raw_data["died"][i] - raw_data["died"][i-1]);
+
+        if (counter > threshhold) {
+            new_infected_cases.push(new_infected_cases_count)
+            new_healed_cases.push(new_healed_cases_count)
+            new_died_cases.push(new_died_cases_count)
+            
+            counter = 0;
+            new_infected_cases_count = new_healed_cases_count = new_died_cases_count = 0;
+        }
+    }
+
+    if (counter > 0) {
+        new_infected_cases.push(new_infected_cases_count)
+        new_healed_cases.push(new_healed_cases_count)
+        new_died_cases.push(new_died_cases_count)
     }
 
     return {

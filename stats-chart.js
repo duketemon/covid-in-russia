@@ -47,56 +47,9 @@ function buildStatsChart(subjectName) {
 function generateStatsChartData(subjectName, groupBy) {
     $('#selected-subject-name')[0].innerText = subjectName;
 
-    var threshhold = 0;
-    if (groupBy == "week") {
-        threshhold = 6;
-    }
-
-    let raw_data = STATS_DATA[subjectName];
-    let dates = [];
-    let new_infected_cases = [];
-    let new_healed_cases = [];
-    let new_died_cases = [];
-
-    var new_infected_cases_count = 0;
-    var new_healed_cases_count = 0;
-    var new_died_cases_count = 0;
-    var counter = 0;
-
-    var start_index = 0;
-    for(var i=1; i<STATS_DATES.length; i++) {
-        if (raw_data["infected"][i] > 0) {
-            start_index = i;
-            break;
-        }
-    }
-
-    for(var i=start_index+1; i<STATS_DATES.length; i++) {
-        if (counter == 0) {
-            dates.push(STATS_DATES[i])
-        }
-
-        counter += 1;
-        new_infected_cases_count += raw_data["infected"][i] - raw_data["infected"][i-1];
-        new_healed_cases_count += -(raw_data["healed"][i] - raw_data["healed"][i-1]);
-        new_died_cases_count += -(raw_data["died"][i] - raw_data["died"][i-1]);
-
-        if (counter > threshhold) {
-            new_infected_cases.push(new_infected_cases_count)
-            new_healed_cases.push(new_healed_cases_count)
-            new_died_cases.push(new_died_cases_count)
-            
-            counter = 0;
-            new_infected_cases_count = new_healed_cases_count = new_died_cases_count = 0;
-        }
-    }
-
-    if (counter > 0) {
-        new_infected_cases.push(new_infected_cases_count)
-        new_healed_cases.push(new_healed_cases_count)
-        new_died_cases.push(new_died_cases_count)
-    }
-
+    var [dates, new_infected_cases, new_healed_cases, new_died_cases] = generateIncrementalData(subjectName);
+    var [dates, new_infected_cases, new_healed_cases, new_died_cases] = groupData(dates, new_infected_cases, new_healed_cases, new_died_cases, groupBy);
+    
     return {
         labels: dates,
         datasets: [{
@@ -117,6 +70,60 @@ function generateStatsChartData(subjectName, groupBy) {
         }]
     };
 };
+
+function generateIncrementalData(subjectName) {
+    let raw_data = STATS_DATA[subjectName];
+    var start_index = 1;
+    while (raw_data["infected"][start_index] == 0) { 
+        start_index++;
+    }
+
+    let dates = [];
+    let new_infected_cases = [];
+    let new_healed_cases = [];
+    let new_died_cases = [];
+    for(var i=start_index; i<STATS_DATES.length; i++) {
+        new_infected_cases_count = raw_data['infected'][i] - raw_data['infected'][i-1];
+        new_healed_cases_count = -(raw_data['healed'][i] - raw_data['healed'][i-1]);
+        new_died_cases_count = -(raw_data['died'][i] - raw_data['died'][i-1]);
+
+        dates.push(STATS_DATES[i]);
+        new_infected_cases.push(new_infected_cases_count);
+        new_healed_cases.push(new_healed_cases_count);
+        new_died_cases.push(new_died_cases_count);
+    }
+
+    return [dates, new_infected_cases, new_healed_cases, new_died_cases];
+};
+
+
+function groupData(dates, new_infected_cases, new_healed_cases, new_died_cases, groupBy) {
+    if (groupBy == 'week') {
+        var labels = [];
+        var infected_cases = []; 
+        var healed_cases = []; 
+        var died_cases = []; 
+
+        var left = 0;
+        var step = 7;
+        while (left < dates.length) {
+            var right = Math.min(left + step, dates.length);
+            var prefix = '';
+            if (right - left > 0) {
+                prefix = dates[left] + '-';
+            }
+            labels.push(prefix + dates[right-1]);
+            infected_cases.push(new_infected_cases.slice(left, right).reduce((a, b) => a + b));
+            healed_cases.push(new_healed_cases.slice(left, right).reduce((a, b) => a + b));
+            died_cases.push(new_died_cases.slice(left, right).reduce((a, b) => a + b));
+            
+            left = right;
+        }
+        return [labels, infected_cases, healed_cases, died_cases];
+    }
+    return [dates, new_infected_cases, new_healed_cases, new_died_cases];
+};
+
 
 function updateStatsDataHandler(obj) {
     let subjectName = $(obj).data('subject-name');
@@ -147,7 +154,7 @@ function buildStatsChartHandler() {
 $(window).load(function() {
     var ctx = document.getElementById('stats-chart').getContext('2d');
     window.myBar = new Chart(ctx, statsChartOptions);
-    buildStatsChart("Россия");
+    buildStatsChart('Россия');
 });
 
 $('#group-by-selector').on('change', function() {

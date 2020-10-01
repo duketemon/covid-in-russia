@@ -40,4 +40,4 @@ $('#highest-mortality-subject-value')[0].innerText = (100 * highestMortalityValu
 
 let highestInfectedUpliftValues = getHighestInfectedUplift();
 $('#highest-infected-uplift-subject')[0].innerText = highestInfectedUpliftValues[0];
-$('#highest-infected-uplift-subject-value')[0].innerText = highestInfectedUpliftValues[1];
+$('#highest-infected-uplift-subject-value')[0].innerText = beautifyNumber(highestInfectedUpliftValues[1]);
